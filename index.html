@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TNT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Boldonse&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="overlay"></div>
+    <div class="master">
+      <p class="intro-text">
+        TNT are a high-energy pop-rock trio with an electrifying mix of original
+        songs and classic covers including everything from Elvis to Oasis.
+        Available for festivals and events. (psst... click anywhere)
+      </p>
+      <div class="buttons">
+        <button onclick="popUp('past')" class="dont-change-bg">
+          Past events
+        </button>
+        <button onclick="popUp('upcoming')" class="dont-change-bg">
+          Upcoming
+        </button>
+        <button onclick="popUp('contact')" class="dont-change-bg">
+          Book now
+        </button>
+      </div>
+      <div class="past-events pop-up dont-change-bg" data-name="past">
+        <button onclick="clearPopUps()">Go back</button>
+        <p>Phoenix Festival</p>
+        <p>2025</p>
+        <p>Folly Festival</p>
+        <p>2025</p>
+        <p>Ashton Keynes Festival</p>
+        <p>2024</p>
+        <p>Las Crownival</p>
+        <p>2024</p>
+        <p>Project Trust Fundraiser</p>
+        <p>2024</p>
+        <p>Folly Festival</p>
+        <p>2024</p>
+        <p>Battle of the Bands</p>
+        <p>2024</p>
+        <p>Preston Fete</p>
+        <p>2023</p>
+        <p>Folly Festival</p>
+        <p>2023</p>
+        <p>Phoenix Festival</p>
+        <p>2023</p>
+        <p>Preston Fete</p>
+        <p>2022</p>
+      </div>
+      <div class="upcoming pop-up dont-change-bg" data-name="upcoming">
+        <button onclick="clearPopUps()">Go back</button>
+        <p>Phoenix Festival</p>
+        <p>2025</p>
+        <p>Ashton Keynes Festival</p>
+        <p>2025</p>
+      </div>
+      <div class="contact pop-up dont-change-bg" data-name="contact">
+        <button onclick="clearPopUps()">Go back</button>
+        <form
+          action="https://formspree.io/f/xqalqbrg"
+          method="POST"
+          class="form"
+        >
+          <div class="input-group">
+            <input type="text" name="Name" placeholder="Name" required />
+            <input type="email" name="Email" placeholder="Email" required />
+          </div>
+          <textarea name="Message" placeholder="Message" required></textarea>
+          <input type="submit" value="Send" class="button" />
+        </form>
+      </div>
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        document.querySelector('.overlay').style.backdropFilter = 'blur(0)';
+      });
+
+      const images = {
+        landscape: [
+          'images/landscape/0.jpg',
+          'images/landscape/1.jpg',
+          'images/landscape/2.jpg',
+          'images/landscape/3.jpg',
+          'images/landscape/4.jpg',
+          'images/landscape/5.jpg',
+          'images/landscape/6.jpg',
+          'images/landscape/7.jpg',
+          'images/landscape/8.jpg',
+          'images/landscape/9.jpg',
+          'images/landscape/10.jpg',
+        ],
+        portrait: [
+          'images/portrait/0.jpg',
+          'images/portrait/1.jpg',
+          'images/portrait/2.jpg',
+          'images/portrait/3.jpg',
+          'images/portrait/4.jpg',
+          'images/portrait/5.jpg',
+          'images/portrait/6.jpg',
+          'images/portrait/7.jpg',
+          'images/portrait/8.jpg',
+          'images/portrait/9.jpg',
+          'images/portrait/10.jpg',
+        ],
+      };
+      const numOfImages = 11;
+      const master = document.querySelector('.master');
+      let counter = 0;
+
+      (async () => {
+        const allImages = images.landscape.concat(images.portrait);
+
+        for (const url of allImages) {
+          const img = new Image();
+          img.src = url;
+          try {
+            await img.decode();
+          } catch {
+            // Fallback if decode fails (e.g., unsupported format)
+            await new Promise((res) => (img.onload = res));
+          }
+        }
+
+        console.log('All images decoded');
+      })();
+
+      document.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return;
+        if (e.target.closest('.dont-change-bg')) return;
+
+        if (window.innerWidth > window.innerHeight) {
+          master.style.setProperty(
+            '--background',
+            `url(${images.landscape[counter]})`
+          );
+        } else {
+          master.style.setProperty(
+            '--background',
+            `url(${images.portrait[counter]})`
+          );
+        }
+        counter = (counter + 1) % numOfImages;
+      });
+
+      function popUp(name) {
+        const el = document.querySelector(`.pop-up[data-name="${name}"]`);
+        el.style.transform = 'translateY(0)';
+        el.style.opacity = '1';
+      }
+
+      function clearPopUps() {
+        document.querySelectorAll('.pop-up').forEach((el) => {
+          el.style.opacity = '0';
+          setTimeout(() => {
+            el.style.transform = 'translateY(100%)';
+          }, 500);
+        });
+      }
+    </script>
+  </body>
+</html>
